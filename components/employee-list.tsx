@@ -25,31 +25,37 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Eye, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface Employee {
     id: number;
-    name: string;
+    firstName: string;
+    lastName: string;
     dateOfBirth: string;
     address: string;
-    phoneNumber: string;
-    department: string;
+    phone: string;
+    departmentName: string;
 }
 
 interface EmployeeResponse {
-    employees: Employee[];
+    products: Employee[];
+    currentPage: number;
+    totalItems: number;
     totalPages: number;
+    currentSort: string;
 }
 
 const fetchEmployees = async ({
     pageParam = 1,
     searchTerm = "",
-    filterBy = "name",
+    filterBy = "id",
 }): Promise<EmployeeResponse> => {
-    const { data } = await axios.get("https://api.example.com/employees", {
-        params: { page: pageParam, search: searchTerm, filterBy },
+    const { data } = await axios.get("http://localhost:8080/api/v1/employee/", {
+        params: { pageNo: pageParam - 1, pageSize: 10, sortBy: filterBy },
     });
+
+    console.log(data);
     return data;
 };
 
@@ -59,7 +65,7 @@ const logoutUser = async () => {
 
 function EmployeeListContent() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [filterBy, setFilterBy] = useState("name");
+    const [filterBy, setFilterBy] = useState("id");
     const [page, setPage] = useState(1);
     const router = useRouter();
 
@@ -124,8 +130,10 @@ function EmployeeListContent() {
                                     <SelectValue placeholder="Filter By" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="name">Name</SelectItem>
-                                    <SelectItem value="department">
+                                    <SelectItem value="firstName">
+                                        First Name
+                                    </SelectItem>
+                                    <SelectItem value="departmentName">
                                         Department
                                     </SelectItem>
                                 </SelectContent>
@@ -156,11 +164,13 @@ function EmployeeListContent() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {data?.employees.map((employee) => (
+                                    {data?.products.map((employee) => (
                                         <TableRow key={employee.id}>
                                             <TableCell>{employee.id}</TableCell>
                                             <TableCell>
-                                                {employee.name}
+                                                {employee.firstName +
+                                                    " " +
+                                                    employee.lastName}
                                             </TableCell>
                                             <TableCell>
                                                 {employee.dateOfBirth}
@@ -169,13 +179,14 @@ function EmployeeListContent() {
                                                 {employee.address}
                                             </TableCell>
                                             <TableCell>
-                                                {employee.phoneNumber}
+                                                {employee.phone}
                                             </TableCell>
                                             <TableCell>
-                                                {employee.department}
+                                                {employee.departmentName}
                                             </TableCell>
                                             <TableCell>
                                                 <Button variant="link">
+                                                    <Eye />
                                                     View
                                                 </Button>
                                             </TableCell>
