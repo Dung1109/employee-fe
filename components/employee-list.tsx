@@ -39,7 +39,7 @@ interface Employee {
 }
 
 interface EmployeeResponse {
-    products: Employee[];
+    employees: Employee[];
     currentPage: number;
     totalItems: number;
     totalPages: number;
@@ -48,7 +48,6 @@ interface EmployeeResponse {
 
 const fetchEmployees = async ({
     pageParam = 1,
-    searchTerm = "",
     filterBy = "id",
 }): Promise<EmployeeResponse> => {
     const { data } = await axios.get("http://localhost:8080/api/v1/employee/", {
@@ -64,15 +63,17 @@ const logoutUser = async () => {
 };
 
 function EmployeeListContent() {
+    const [filteredEmployees, setFilteredEmployees] = useState<
+        Employee[] | null
+    >(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [filterBy, setFilterBy] = useState("id");
     const [page, setPage] = useState(1);
     const router = useRouter();
 
     const { data, isLoading, isError } = useQuery({
-        queryKey: ["employees", page, searchTerm, filterBy],
-        queryFn: () =>
-            fetchEmployees({ pageParam: page, searchTerm, filterBy }),
+        queryKey: ["employees", page, filterBy],
+        queryFn: () => fetchEmployees({ pageParam: page, filterBy }),
     });
 
     const logoutMutation = useMutation({
@@ -90,8 +91,33 @@ function EmployeeListContent() {
         setPage(newPage);
     };
 
-    const handleSearch = () => {
-        setPage(1); // Reset to first page when searching
+    const handleSearch = (): void => {
+        if (!data?.employees) return;
+
+        if (searchTerm === "") {
+            setFilteredEmployees(null); // Reset to show all employees
+            return;
+        }
+
+        const filtered = data.employees.filter(
+            (employee) =>
+                employee.firstName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                employee.lastName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                employee.departmentName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+        );
+
+        setFilteredEmployees(filtered);
+    };
+
+    const handleClear = (): void => {
+        setSearchTerm("");
+        setFilteredEmployees(null);
     };
 
     return (
@@ -139,7 +165,12 @@ function EmployeeListContent() {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <Button onClick={handleSearch}>Search</Button>
+                        <div className="flex gap-2">
+                            <Button onClick={handleSearch}>Search</Button>
+                            <Button variant="outline" onClick={handleClear}>
+                                Clear
+                            </Button>
+                        </div>
                     </div>
                     {isLoading ? (
                         <div className="flex justify-center items-center h-64">
@@ -164,7 +195,11 @@ function EmployeeListContent() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {data?.products.map((employee) => (
+                                    {(
+                                        filteredEmployees ||
+                                        data?.employees ||
+                                        []
+                                    ).map((employee) => (
                                         <TableRow key={employee.id}>
                                             <TableCell>{employee.id}</TableCell>
                                             <TableCell>
