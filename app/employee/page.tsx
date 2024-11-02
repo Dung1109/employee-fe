@@ -1,9 +1,9 @@
-import { EmployeeListComponent } from "@/components/employee-list";
+import EmployeeListContent from "@/components/employee-list";
 
 export default function Home() {
     return (
         <div>
-            <EmployeeListComponent />
+            <EmployeeListContent/>
         </div>
     );
 }

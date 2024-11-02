@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Eye, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface Employee {
     id: number;
@@ -62,7 +63,7 @@ const logoutUser = async () => {
     await axios.post("https://api.example.com/logout");
 };
 
-function EmployeeListContent() {
+export default function EmployeeListContent() {
     const [filteredEmployees, setFilteredEmployees] = useState<
         Employee[] | null
     >(null);
@@ -153,7 +154,7 @@ function EmployeeListContent() {
                                 onValueChange={setFilterBy}
                             >
                                 <SelectTrigger className="w-32">
-                                    <SelectValue placeholder="Filter By" />
+                                    <SelectValue placeholder="Filter By"/>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="firstName">
@@ -174,7 +175,7 @@ function EmployeeListContent() {
                     </div>
                     {isLoading ? (
                         <div className="flex justify-center items-center h-64">
-                            <Loader2 className="h-8 w-8 animate-spin" />
+                            <Loader2 className="h-8 w-8 animate-spin"/>
                         </div>
                     ) : isError ? (
                         <div className="text-center text-red-500">
@@ -221,8 +222,8 @@ function EmployeeListContent() {
                                             </TableCell>
                                             <TableCell>
                                                 <Button variant="link">
-                                                    <Eye />
-                                                    View
+                                                    <Eye/>
+                                                    <Link href={`/employee/${employee.id}`}>View</Link>
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
@@ -271,13 +272,13 @@ function EmployeeListContent() {
 }
 
 // Create a new QueryClient instance
-const queryClient = new QueryClient();
-
-// Wrap the main component with QueryClientProvider
-export function EmployeeListComponent() {
-    return (
-        <QueryClientProvider client={queryClient}>
-            <EmployeeListContent />
-        </QueryClientProvider>
-    );
-}
+// const queryClient = new QueryClient();
+//
+// // Wrap the main component with QueryClientProvider
+// export function EmployeeListComponent() {
+//     return (
+//         // <QueryClientProvider client={queryClient}>
+//             <EmployeeListContent />
+//         // </QueryClientProvider>
+//     );
+// }

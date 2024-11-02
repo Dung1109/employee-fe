@@ -1,42 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {useState} from "react";
+import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { format } from "date-fns";
-import { ArrowBigLeftDash, CalendarIcon, Plus, TimerReset } from "lucide-react";
+import {format} from "date-fns";
+import {ArrowBigLeftDash, CalendarIcon, Plus, TimerReset} from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Calendar } from "@/components/ui/calendar";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { toast } from "@/hooks/use-toast";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
+import {Textarea} from "@/components/ui/textarea";
+import {Checkbox} from "@/components/ui/checkbox";
+import {Calendar} from "@/components/ui/calendar";
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
+import {cn} from "@/lib/utils";
+import {toast} from "@/hooks/use-toast";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/navigation";
 
 const formSchema = z.object({
     firstName: z.string().min(1, "First name is required"),
@@ -120,7 +104,7 @@ export default function AddEmployeeForm() {
     }
 
     return (
-        <Card className="w-full p-6 md:p-10">
+        <Card className="w-full p-4 md:p-6">
             <CardHeader>
                 <CardTitle>Add Employee</CardTitle>
             </CardHeader>
@@ -182,7 +166,7 @@ export default function AddEmployeeForm() {
                             <Controller
                                 name="dateOfBirth"
                                 control={form.control}
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <Button
@@ -190,10 +174,10 @@ export default function AddEmployeeForm() {
                                                 className={cn(
                                                     "w-full justify-start text-left font-normal",
                                                     !field.value &&
-                                                        "text-muted-foreground"
+                                                    "text-muted-foreground"
                                                 )}
                                             >
-                                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                                <CalendarIcon className="mr-2 h-4 w-4"/>
                                                 {field.value ? (
                                                     format(field.value, "PPP")
                                                 ) : (
@@ -212,7 +196,7 @@ export default function AddEmployeeForm() {
                                                 disabled={(date) =>
                                                     date > new Date() ||
                                                     date <
-                                                        new Date("1900-01-01")
+                                                    new Date("1900-01-01")
                                                 }
                                                 initialFocus
                                             />
@@ -233,7 +217,7 @@ export default function AddEmployeeForm() {
                             <Controller
                                 name="gender"
                                 control={form.control}
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <RadioGroup
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
@@ -318,7 +302,7 @@ export default function AddEmployeeForm() {
                             <Controller
                                 name="active"
                                 control={form.control}
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <Checkbox
                                         id="active"
                                         checked={field.value}
@@ -330,16 +314,15 @@ export default function AddEmployeeForm() {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="departmentName">
-                                Department{" "}
-                                <span className="text-red-600">(*)</span>
+                                Department <span className="text-red-600">(*)</span>
                             </Label>
                             <Controller
                                 name="departmentName"
                                 control={form.control}
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <Select onValueChange={field.onChange}>
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select department" />
+                                            <SelectValue placeholder="Select department"/>
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="hr">
@@ -381,7 +364,7 @@ export default function AddEmployeeForm() {
                             onClick={handleBack}
                             type="button"
                         >
-                            <ArrowBigLeftDash />
+                            <ArrowBigLeftDash/>
                             Back
                         </Button>
                         {/*<Button variant="outline" className="bg-orange-400" type="button" onClick={() => form.reset()}*/}
@@ -392,7 +375,7 @@ export default function AddEmployeeForm() {
                             type="reset"
                             disabled={isSubmitting}
                         >
-                            <TimerReset />
+                            <TimerReset/>
                             Reset
                         </Button>
                         <Button
@@ -400,7 +383,7 @@ export default function AddEmployeeForm() {
                             disabled={isSubmitting}
                             className="bg-green-600"
                         >
-                            <Plus /> {isSubmitting ? "Adding..." : "Add"}
+                            <Plus/> {isSubmitting ? "Adding..." : "Add"}
                         </Button>
                     </CardFooter>
                 </form>
