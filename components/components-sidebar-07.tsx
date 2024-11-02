@@ -60,7 +60,7 @@ import Image from "next/image";
 // This is sample data.
 const data = {
     user: {
-        name: "shadcn",
+        name: "andy",
         email: "m@example.com",
         avatar: "/avatars/shadcn.jpg",
     },
@@ -80,15 +80,16 @@ const data = {
     navMain: [
         {
             title: "Dashboard",
-            url: "#",
+            url: "/employee",
             icon: SquareTerminal,
-            isActive: true,
+            isActive: false,
             isNotIcon: true,
         },
         {
             title: "Employee Management",
             url: "#",
             icon: Bot,
+            isActive: true,
             items: [
                 {
                     title: "Employee List",
@@ -289,15 +290,13 @@ export function Sidebar_07({
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href="#">
-                                        Building Your Application
+                                    <BreadcrumbLink href="/">
+                                        Employee
                                     </BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator className="hidden md:block" />
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>
-                                        Data Fetching
-                                    </BreadcrumbPage>
+                                    <BreadcrumbPage>Dashboard</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>

@@ -36,6 +36,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
     firstName: z.string().min(1, "First name is required"),
@@ -63,6 +64,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function AddEmployeeForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const router = useRouter();
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -112,6 +114,10 @@ export default function AddEmployeeForm() {
             setIsSubmitting(false);
         }
     };
+
+    function handleBack(): void {
+        router.push("/employee");
+    }
 
     return (
         <Card className="w-full p-6 md:p-10">
@@ -370,7 +376,11 @@ export default function AddEmployeeForm() {
                         </div>
                     </div>
                     <CardFooter className="mt-6 flex text-white   space-x-2 px-0">
-                        <Button className="bg-cyan-600">
+                        <Button
+                            className="bg-cyan-600"
+                            onClick={handleBack}
+                            type="button"
+                        >
                             <ArrowBigLeftDash />
                             Back
                         </Button>
