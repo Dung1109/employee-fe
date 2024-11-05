@@ -1,12 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-    QueryClient,
-    QueryClientProvider,
-    useQuery,
-    useMutation,
-} from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,7 +46,9 @@ const fetchEmployees = async ({
     pageParam = 1,
     filterBy = "id",
 }): Promise<EmployeeResponse> => {
+    const token = sessionStorage.getItem("jwt");
     const { data } = await axios.get("http://localhost:8080/api/v1/employee/", {
+        headers: { Authorization: token },
         params: { pageNo: pageParam - 1, pageSize: 10, sortBy: filterBy },
     });
 
@@ -154,7 +151,7 @@ export default function EmployeeListContent() {
                                 onValueChange={setFilterBy}
                             >
                                 <SelectTrigger className="w-32">
-                                    <SelectValue placeholder="Filter By"/>
+                                    <SelectValue placeholder="Filter By" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="firstName">
@@ -175,7 +172,7 @@ export default function EmployeeListContent() {
                     </div>
                     {isLoading ? (
                         <div className="flex justify-center items-center h-64">
-                            <Loader2 className="h-8 w-8 animate-spin"/>
+                            <Loader2 className="h-8 w-8 animate-spin" />
                         </div>
                     ) : isError ? (
                         <div className="text-center text-red-500">
@@ -222,8 +219,12 @@ export default function EmployeeListContent() {
                                             </TableCell>
                                             <TableCell>
                                                 <Button variant="link">
-                                                    <Eye/>
-                                                    <Link href={`/employee/${employee.id}`}>View</Link>
+                                                    <Eye />
+                                                    <Link
+                                                        href={`/employee/${employee.id}`}
+                                                    >
+                                                        View
+                                                    </Link>
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
