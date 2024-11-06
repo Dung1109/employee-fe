@@ -16,7 +16,12 @@ type EmployeeData = {
 };
 
 export async function fetchEmployee(id: string) {
-  const res = await axios.get(`http://localhost:8080/api/v1/employee/${id}`);
+  const token = sessionStorage.getItem("jwt");
+  const res = await axios.get(`http://localhost:8080/api/v1/employee/${id}`, {
+    headers: {
+      Authorization: token,
+    },
+  });
   return res.data;
 }
 
@@ -24,12 +29,14 @@ export async function updateEmployee(
   employeeData: EmployeeData,
 ): Promise<EmployeeData> {
   try {
+    const token = sessionStorage.getItem("jwt");
     const response = await axios.put(
       `http://localhost:8080/api/v1/employee/${employeeData.id}`,
       employeeData,
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: token,
         },
       },
     );

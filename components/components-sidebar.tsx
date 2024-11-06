@@ -56,6 +56,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
+import { useAuthStore } from "@/store/auth-store";
+import { useRouter } from "next/navigation";
 
 // This is sample data.
 const data = {
@@ -106,6 +108,13 @@ export function SidebarComponent({
   children: React.ReactNode;
 }>) {
   const [activeTeam] = React.useState(data.teams[0]);
+  const { logout } = useAuthStore();
+
+  const router = useRouter();
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
 
   return (
     <SidebarProvider>
@@ -248,7 +257,7 @@ export function SidebarComponent({
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
                     <LogOut />
                     Log out
                   </DropdownMenuItem>
