@@ -51,7 +51,7 @@ const formSchema = z.object({
   }),
   email: z.string().email("Invalid email address"),
   address: z.string().optional(),
-  active: z.boolean().optional(),
+  status: z.boolean().optional(),
   departmentName: z.string({
     required_error: "Department is required",
   }),
@@ -75,6 +75,8 @@ export default function EmployeeDetailPage() {
     queryKey: ["employee", id],
     queryFn: () => fetchEmployee(id),
   });
+
+  console.log(employee);
 
   const updateEmployeeMutation = useMutation({
     mutationFn: updateEmployee,
@@ -111,7 +113,7 @@ export default function EmployeeDetailPage() {
       gender: "male",
       email: "",
       address: "",
-      active: false,
+      status: false,
       departmentName: "",
       remark: "",
     },
@@ -127,7 +129,7 @@ export default function EmployeeDetailPage() {
         gender: employee.gender === 0 ? "male" : "female",
         email: employee.email,
         address: employee.address,
-        active: employee.status === 0,
+        status: employee.status === "ACTIVE",
         departmentName: employee.departmentName,
         remark: employee.remark,
       });
@@ -147,7 +149,7 @@ export default function EmployeeDetailPage() {
       id,
       ...data,
       gender: data.gender === "male" ? 0 : 1,
-      status: data.active ? 0 : 1,
+      status: data.status ? 0 : 1,
     });
   }
 
@@ -326,7 +328,7 @@ export default function EmployeeDetailPage() {
             <div className="flex items-center space-x-2">
               {isEditing ? (
                 <Controller
-                  name="active"
+                  name="status"
                   control={form.control}
                   render={({ field }) => (
                     <Checkbox
@@ -339,7 +341,7 @@ export default function EmployeeDetailPage() {
               ) : (
                 <Checkbox
                   id="active"
-                  checked={employee.status === 0}
+                  checked={employee.status === "ACTIVE"}
                   disabled
                 />
               )}
