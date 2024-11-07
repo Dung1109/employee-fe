@@ -83,7 +83,11 @@ export default function AddEmployeeForm() {
 
         console.log(transformedData);
         try {
-            const token = sessionStorage.getItem("jwt");
+            const cookie = document.cookie
+                .split(";")
+                .find((c) => c.trim().startsWith("jwt="));
+            const token = cookie ? cookie.split("=")[1] : null;
+
             const response = await axios.post(
                 "http://localhost:8080/api/v1/employee/",
                 transformedData,
