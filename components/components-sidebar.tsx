@@ -58,6 +58,7 @@ import {
 import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
 import { useRouter } from "next/navigation";
+import companyLogo from "@/app/(main)/favicon.ico";
 
 // This is sample data.
 const data = {
@@ -71,7 +72,7 @@ const data = {
     {
       name: "Tay Duong Pharma JSC",
       logo: () => (
-        <Image src="/favicon.ico" alt="Company Logo" width={32} height={32} />
+        <Image src={companyLogo} alt="Company Logo" width={32} height={32} />
       ),
     },
   ],
