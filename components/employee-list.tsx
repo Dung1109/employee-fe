@@ -109,7 +109,7 @@ export default function EmployeeListContent() {
         setPage(1); // Reset to first page when searching
     };
 
-    const { isAuthenticated } = useAuthStore();
+    const { username, isAuthenticated } = useAuthStore();
     console.log("The isAuthenticated is ", isAuthenticated);
 
     const handleClear = () => {
@@ -125,7 +125,7 @@ export default function EmployeeListContent() {
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-3xl font-bold">Employee list</h2>
                     <div>
-                        <span className="mr-2">Welcome user</span>
+                        <span className="mr-2">Welcome {username}</span>
                         <Button
                             variant="outline"
                             onClick={handleLogout}

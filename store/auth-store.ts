@@ -1,30 +1,52 @@
+// auth-store.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { setCookie, removeCookie } from "@/utils/cookies";
+import { jwtDecode } from "jwt-decode";
+import { setCookie, removeCookie } from "@/utils/cookies"; // Import the cookie functions
 
 interface AuthState {
-    isAuthenticated: boolean;
     token: string | null;
+    username: string | null;
+    email: string | null;
+    isAuthenticated: boolean;
     login: (token: string) => void;
     logout: () => void;
 }
 
-export const useAuthStore = create(
-    persist<AuthState>(
+interface JWTPayload {
+    sub: string; // username
+    email: string;
+}
+
+export const useAuthStore = create<AuthState>()(
+    persist(
         (set) => ({
-            isAuthenticated: false,
             token: null,
+            username: null,
+            email: null,
+            isAuthenticated: false,
             login: (token: string) => {
-                setCookie("jwt", token);
-                set({ isAuthenticated: true, token });
+                const decoded = jwtDecode<JWTPayload>(token);
+                set({
+                    token,
+                    username: decoded.sub,
+                    email: decoded.email,
+                    isAuthenticated: true,
+                });
+                setCookie("jwt", token); // Set the cookie when logging in
             },
             logout: () => {
-                removeCookie("jwt");
-                set({ isAuthenticated: false, token: null });
+                set({
+                    token: null,
+                    username: null,
+                    email: null,
+                    isAuthenticated: false,
+                });
+                removeCookie("jwt"); // Remove the cookie when logging out
             },
         }),
         {
-            name: "userLoginStatus",
+            name: "auth-storage",
         }
     )
 );
