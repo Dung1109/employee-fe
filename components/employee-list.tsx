@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ import { Eye, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth-store";
+import { removeCookie } from "@/utils/cookies";
 
 interface Employee {
     id: number;
@@ -68,10 +69,6 @@ const fetchEmployees = async ({
     return data;
 };
 
-const logoutUser = async () => {
-    await axios.post("https://api.example.com/logout");
-};
-
 export default function EmployeeListContent() {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterBy, setFilterBy] = useState("");
@@ -79,7 +76,7 @@ export default function EmployeeListContent() {
     const [activeFilter, setActiveFilter] = useState({ by: "", value: "" });
     const router = useRouter();
 
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading, isError, error } = useQuery({
         queryKey: ["employees", page, activeFilter.by, activeFilter.value],
         queryFn: () =>
             fetchEmployees({
@@ -89,15 +86,9 @@ export default function EmployeeListContent() {
             }),
     });
 
-    const logoutMutation = useMutation({
-        mutationFn: logoutUser,
-        onSuccess: () => {
-            router.push("/login");
-        },
-    });
-
     const handleLogout = () => {
-        logoutMutation.mutate();
+        removeCookie("jwt");
+        router.push("/login");
     };
 
     const handlePageChange = (newPage: number) => {
@@ -119,6 +110,12 @@ export default function EmployeeListContent() {
         setPage(1);
     };
 
+    if (error) {
+        console.error("Error fetching employees:", error);
+        removeCookie("jwt");
+        router.push("/login");
+    }
+
     return (
         <div className="flex h-screen bg-gray-100">
             <main className="flex-1 p-10">
@@ -126,14 +123,8 @@ export default function EmployeeListContent() {
                     <h2 className="text-3xl font-bold">Employee list</h2>
                     <div>
                         <span className="mr-2">Welcome {username}</span>
-                        <Button
-                            variant="outline"
-                            onClick={handleLogout}
-                            disabled={logoutMutation.isPending}
-                        >
-                            {logoutMutation.isPending
-                                ? "Logging out..."
-                                : "Logout"}
+                        <Button variant="outline" onClick={handleLogout}>
+                            Logout
                         </Button>
                     </div>
                 </div>

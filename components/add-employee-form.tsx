@@ -79,6 +79,7 @@ export default function AddEmployeeForm() {
             ...data,
             gender: data.gender === "male" ? 0 : 1,
             status: data.active ? 0 : 1,
+            dateOfBirth: format(data.dateOfBirth, "yyyy-MM-dd"),
         };
 
         console.log(transformedData);
