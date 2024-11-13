@@ -56,7 +56,7 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import companyLogo from "@/app/(main)/favicon.ico";
 
 // This is sample data.
@@ -103,7 +103,31 @@ const data = {
                 },
             ],
         },
+        {
+            title: "Customer Management",
+            url: "#",
+            icon: Bot,
+            isActive: true,
+            items: [
+                {
+                    title: "Customer List",
+                    url: "/khach-hang",
+                },
+                {
+                    title: "Add Customer",
+                    url: "/customer/add",
+                },
+            ],
+        },
     ],
+};
+
+// Add this helper function before the SidebarComponent
+const formatPathSegment = (segment: string) => {
+    return segment
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
 };
 
 export function SidebarComponent({
@@ -121,6 +145,8 @@ export function SidebarComponent({
     };
 
     const { username, email } = useAuthStore();
+    const pathname = usePathname();
+    const pathSegments = pathname.split("/").filter(Boolean);
 
     return (
         <SidebarProvider>
@@ -300,15 +326,36 @@ export function SidebarComponent({
                         />
                         <Breadcrumb>
                             <BreadcrumbList>
-                                <BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href="/employee">
-                                        Employee
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator className="hidden md:block" />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>Dashboard</BreadcrumbPage>
-                                </BreadcrumbItem>
+                                {pathSegments.map((segment, index) => {
+                                    const path =
+                                        "/" +
+                                        pathSegments
+                                            .slice(0, index + 1)
+                                            .join("/");
+                                    const isLast =
+                                        index === pathSegments.length - 1;
+
+                                    return (
+                                        <React.Fragment key={path}>
+                                            <BreadcrumbItem>
+                                                {isLast ? (
+                                                    <BreadcrumbPage>
+                                                        {formatPathSegment(
+                                                            segment
+                                                        )}
+                                                    </BreadcrumbPage>
+                                                ) : (
+                                                    <BreadcrumbLink href={path}>
+                                                        {formatPathSegment(
+                                                            segment
+                                                        )}
+                                                    </BreadcrumbLink>
+                                                )}
+                                            </BreadcrumbItem>
+                                            {!isLast && <BreadcrumbSeparator />}
+                                        </React.Fragment>
+                                    );
+                                })}
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
